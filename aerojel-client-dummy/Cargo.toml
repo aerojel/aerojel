@@ -1,0 +1,10 @@
+[package]
+name = "aerojel-client-dummy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aerojel-core = { version = "0.1.0", path = "../aerojel-core" }
+aerojel-audio = { version = "0.1.0", path = "../aerojel-audio" }
+
+tokio = { version = "1.51.1", features = ["sync"] }

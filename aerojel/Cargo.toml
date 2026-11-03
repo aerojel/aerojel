@@ -1,0 +1,16 @@
+[package]
+name = "aerojel"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies.aerojel-core]
+version = "0.1.0"
+path = "../aerojel-core"
+
+[dependencies.aerojel-client-dummy]
+version = "0.1.0"
+path = "../aerojel-client-dummy"
+
+[dependencies.aerojel-audio]
+version = "0.1.0"
+path = "../aerojel-audio"

@@ -1,0 +1,10 @@
+[package]
+name = "aerojel-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = "1.51.1"
+async-trait = "0.1.92"
+bytes = "1.12.1"
+smallvec = "1.16.4"
