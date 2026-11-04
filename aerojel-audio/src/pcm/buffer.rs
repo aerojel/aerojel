@@ -2,6 +2,7 @@ use std::ops::RangeBounds;
 
 use crate::pcm::{PcmSample, slice::{PcmSlice, PcmSliceMut}, utils};
 
+/// Buffer containing `PcmSample`s in planar format.
 pub struct PcmBuffer {
     data: Box<[PcmSample]>,
     plane_count: usize,

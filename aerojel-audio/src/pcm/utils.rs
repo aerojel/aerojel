@@ -14,7 +14,7 @@ pub fn bounds_to_range<B: RangeBounds<usize>>(b: B, len: usize) -> (usize, usize
     };
 
     assert!(start <= end, "invalid range");
-    assert!(end < len, "end out of bounds");
+    assert!(end <= len, "end out of bounds");
 
     (start, end)
 }

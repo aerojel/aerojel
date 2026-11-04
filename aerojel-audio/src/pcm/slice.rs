@@ -52,9 +52,9 @@ impl<'a> PcmSlice<'a> {
     pub fn iter_planes(&self) -> Planes<'_> {
         Planes {
             data: self.data,
+            planes_left: self.plane_count,
             plane_len: self.plane_len,
             len: self.len,
-            planes_left: self.plane_count,
         }
     }
 
@@ -164,18 +164,18 @@ impl<'a> PcmSliceMut<'a> {
     pub fn iter_planes(&self) -> Planes<'_> {
         Planes {
             data: self.data,
+            planes_left: self.plane_count,
             plane_len: self.plane_len,
             len: self.len,
-            planes_left: self.plane_count,
         }
     }
 
     pub fn iter_planes_mut(&mut self) -> PlanesMut<'_> {
         PlanesMut {
             data: self.data,
+            planes_left: self.plane_count,
             plane_len: self.plane_len,
             len: self.len,
-            planes_left: self.plane_count,
         }
     }
 
@@ -188,28 +188,28 @@ impl<'a> PcmSliceMut<'a> {
     }
 }
 
+fn assert_bounds(end: usize, avilable: usize) {
+    assert!(end <= avilable, "end index is out of bounds");
+}
+
 pub struct Planes<'a> {
     data: &'a [PcmSample],
+    planes_left: usize,
     plane_len: usize,
     len: usize,
-    /// Storing a separate index is required for zero-sized slices
-    /// where just incrementing `data` would always produce 0 iterations.
-    planes_left: usize,
 }
 
 impl<'a> Iterator for Planes<'a> {
     type Item = &'a [PcmSample];
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.planes_left > 0 {
-            let end = self.data.len() - self.plane_len * (self.planes_left - 1);
-            let start = end - self.len;
-
-            let slice = &self.data[start..end];
-
+        if self.planes_left != 0 {
             self.planes_left -= 1;
 
-            Some(slice)
+            let (plane, remainder) = self.data.split_at(self.plane_len);
+            self.data = remainder;
+
+            Some(&plane[..self.len])
         } else {
             None
         }
@@ -218,33 +218,25 @@ impl<'a> Iterator for Planes<'a> {
 
 pub struct PlanesMut<'a> {
     data: &'a mut [PcmSample],
+    planes_left: usize,
     plane_len: usize,
     len: usize,
-    /// Storing a separate index is required for zero-sized slices
-    /// where just incrementing `data` would always produce 0 iterations.
-    planes_left: usize, 
 }
 
 impl<'a> Iterator for PlanesMut<'a> {
     type Item = &'a mut [PcmSample];
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.planes_left > 0 {
-            let end = self.data.len() - self.plane_len * (self.planes_left - 1);
-            let start = end - self.len;
-
-            let (remainder, output) = std::mem::take(&mut self.data).split_at_mut(start);
-            self.data = remainder;
-
+        if self.planes_left != 0 {
             self.planes_left -= 1;
 
-            Some(&mut output[..self.len])
+            let data = std::mem::take(&mut self.data);
+            let (plane, remainder) = data.split_at_mut(self.plane_len);
+            self.data = remainder;
+
+            Some(&mut plane[..self.len])
         } else {
             None
         }
     }
-}
-
-fn assert_bounds(end: usize, avilable: usize) {
-    assert!(end <= avilable, "end index is out of bounds");
 }
