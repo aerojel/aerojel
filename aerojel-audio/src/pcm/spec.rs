@@ -5,7 +5,7 @@ pub struct PcmSpec {
 }
 
 impl PcmSpec {
-    pub fn new(
+    pub const fn new(
         sample_rate: u32,
         plane_count: usize,
     ) -> Self {

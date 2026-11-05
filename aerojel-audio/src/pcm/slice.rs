@@ -133,6 +133,15 @@ impl<'a> PcmSliceMut<'a> {
         }
     }
 
+    /// Move samples from one part to another. Same as `[].copy_within()`.
+    pub fn copy_within<B: RangeBounds<usize>>(&mut self, bounds: B, to: usize) {
+        let (start, end) = utils::bounds_to_range(bounds, self.len);
+
+        for plane in self.iter_planes_mut() {
+            plane.copy_within(start..end, to);
+        }
+    }
+
     pub fn plane_pair_mut(
         &mut self,
         index0: usize,

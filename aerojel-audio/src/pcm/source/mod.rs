@@ -1,6 +1,6 @@
 pub mod procedural;
 pub mod trim;
-// TODO: pub mod mixer; // low level audio mixer
+pub mod mixer;
 
 use crate::pcm::{PcmSpec, slice::PcmSliceMut};
 

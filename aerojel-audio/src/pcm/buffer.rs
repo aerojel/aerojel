@@ -46,10 +46,24 @@ impl PcmBuffer {
         PcmSlice::from_raw_parts(&self.data[start..], self.plane_count, self.plane_len, end - start)
     }
 
+    /// Convert to slice.
+    /// 
+    /// Exactly the same as `self.slice(..)`.
+    pub fn as_slice(&self) -> PcmSlice<'_> {
+        self.slice(..)
+    }
+
     pub fn slice_mut<B: RangeBounds<usize>>(&mut self, bounds: B) -> PcmSliceMut<'_> {
         let (start, end) = utils::bounds_to_range(bounds, self.plane_len);
 
         PcmSliceMut::from_raw_parts(&mut self.data[start..], self.plane_count, self.plane_len, end - start)
+    }
+
+    /// Convert to mutable slice.
+    /// 
+    /// Exactly the same as `self.slice_mut(..)`.
+    pub fn as_mut_slice(&mut self) -> PcmSliceMut<'_> {
+        self.slice_mut(..)
     }
 
     pub fn plane(&self, index: usize) -> &[PcmSample] {
